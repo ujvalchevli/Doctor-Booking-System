@@ -39,13 +39,13 @@ function Doctorlogin() {
 
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#5f6fff]/10 via-white to-purple-100/30 flex items-center justify-center py-12 px-4">
+    <div className="min-h-screen bg-linear-to-br from-[#5f6fff]/10 via-white to-purple-100/30 flex items-center justify-center py-12 px-4">
       <div className="max-w-md w-full">
         {/* Main Card */}
         <div className="bg-white rounded-3xl shadow-2xl p-8 lg:p-10">
           {/* Header */}
           <div className="text-center mb-8">
-            <div className="w-20 h-20 bg-gradient-to-br from-[#5f6fff] to-[#8a96ff] rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-xl">
+            <div className="w-20 h-20 bg-linear-to-br from-[#5f6fff] to-[#8a96ff] rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-xl">
               <svg
                 className="w-10 h-10 text-white"
                 fill="none"
@@ -201,7 +201,7 @@ function Doctorlogin() {
               disabled={loading}
               onClick={onSubmitHandler}
               type="submit"
-              className="w-full bg-gradient-to-r from-[#5f6fff] to-[#8a96ff] text-white py-3 rounded-xl font-semibold hover:shadow-lg hover:shadow-[#5f6fff]/30 transition-all duration-300 flex items-center justify-center group disabled:opacity-50"
+              className="w-full bg-linear-to-r from-[#5f6fff] to-[#8a96ff] text-white py-3 rounded-xl font-semibold hover:shadow-lg hover:shadow-[#5f6fff]/30 transition-all duration-300 flex items-center justify-center group disabled:opacity-50"
             >
               {loading ? (
                 <div className="flex items-center gap-2">
