@@ -4,6 +4,7 @@ const doctorSchema = new mongoose.Schema(
   {
     name: { type: String, required: true },
     email: { type: String, required: true, unique: true },
+    phone: { type: String, default: 'Not provided' },
     password: { type: String, required: true },
     image: { type: String, required: true },
     speciality: { type: String, required: true },
@@ -16,7 +17,7 @@ const doctorSchema = new mongoose.Schema(
     address: { type: String, required: true },
     date: { type: Date, required: true },
     slotbooked: { type: Object, default: {} },
-    doctorverify: { type: String, default: "false" },
+    doctorverify: { type: String, default: "pending" },
     rejectReason: { type: String, default: "" },  
     isVerified: { type: Boolean, default: false },
     verifyOtp: { type: String, default: "" },

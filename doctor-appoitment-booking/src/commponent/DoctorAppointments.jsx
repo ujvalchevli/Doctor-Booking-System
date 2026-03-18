@@ -149,7 +149,7 @@ function DoctorAppointments() {
                           {item.userData.name}
                         </p>
                         <p className="text-xs text-gray-500">
-                          {item.userData.gender}
+                          {item.userData.gender} &bull; {item.userData.phone}
                         </p>
                       </div>
                     </div>

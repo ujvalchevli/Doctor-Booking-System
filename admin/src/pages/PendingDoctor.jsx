@@ -15,7 +15,7 @@ function PendingDoctor() {
   }, []);
 
   const pendingDoctors = doctors.filter(
-    (doc) => doc.doctorverify === "false" || doc.doctorverify === false,
+    (doc) => doc.doctorverify === "pending" || doc.doctorverify === "false" || doc.doctorverify === false,
   );
 
   const handleVerify = (id) => {

@@ -102,9 +102,13 @@ export const adminDashboard = async (req, res) => {
       appointments: appointments.length,
       patients: users.length,
       latestAppointments: appointments.slice(0, 5),
-      latestDoctors: doctors.reverse().slice(0, 5),
-      pendingVerifications: doctors.filter((doc) => doc.doctorverify === "pending")
-        .length,
+      latestDoctors: doctors.reverse().slice(0, 5).map(doc => ({
+        ...doc.toObject(),
+        doctorverify: doc.doctorverify === "false" ? "pending" : doc.doctorverify
+      })),
+      pendingVerifications: doctors.filter(
+        (doc) => doc.doctorverify === "pending" || doc.doctorverify === "false"
+      ).length,
       verifiedDoctors: doctors.filter((doc) => doc.doctorverify === "verified")
         .length,
       rejectedDoctors: doctors.filter((doc) => doc.doctorverify === "rejected")

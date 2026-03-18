@@ -11,6 +11,7 @@ function DoctorProfile() {
   // Form state
   const [formData, setFormData] = useState({
     name: "",
+    phone: "",
     speciality: "",
     degree: "",
     experience: "",
@@ -26,6 +27,7 @@ function DoctorProfile() {
     if (doctorData) {
       setFormData({
         name: doctorData.name || "",
+        phone: doctorData.phone || "Not provided",
         speciality: doctorData.speciality || "",
         degree: doctorData.degree || "",
         experience: doctorData.experience || "",
@@ -53,6 +55,7 @@ function DoctorProfile() {
       setLoading(true);
       const updateForm = new FormData();
       updateForm.append("name", formData.name);
+      updateForm.append("phone", formData.phone);
       updateForm.append("speciality", formData.speciality);
       updateForm.append("degree", formData.degree);
       updateForm.append("experience", formData.experience);
@@ -135,6 +138,22 @@ function DoctorProfile() {
                     />
                   ) : (
                     <p className="text-gray-900 font-medium px-4 py-3 bg-gray-50 rounded-xl border border-transparent">{doctorData.name}</p>
+                  )}
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-gray-500 mb-2 uppercase tracking-tight">Phone Number</label>
+                  {isEditing ? (
+                    <input
+                      name="phone"
+                      type="tel"
+                      value={formData.phone}
+                      onChange={handleInputChange}
+                      className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#5f6fff]/20 focus:border-[#5f6fff] outline-none transition-all"
+                      required
+                    />
+                  ) : (
+                    <p className="text-gray-900 font-medium px-4 py-3 bg-gray-50 rounded-xl border border-transparent">{doctorData.phone || "Not provided"}</p>
                   )}
                 </div>
 

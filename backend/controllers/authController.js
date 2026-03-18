@@ -2,6 +2,7 @@ import userModel from "../models/userModel.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import transporter from "../config/nodeMailer.js";
+import { generateOTPVerificationEmail, generateResetPasswordEmail } from "../config/emailTemplates.js";
 export const register = async (req, res) => {
   try {
     const { name, email, password, phone } = req.body;
@@ -46,19 +47,7 @@ export const register = async (req, res) => {
       to: email,
       subject: "Welcome to MediCare - Verify Your Account",
       text: `Welcome to MediCare, ${name}! Your account has been created. Use this OTP to verify your email address: ${otp}`,
-      html: `
-        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #eee; border-radius: 10px;">
-          <h2 style="color: #5f6fff; text-align: center;">Welcome to MediCare!</h2>
-          <p>Hi <strong>${name}</strong>,</p>
-          <p>Thank you for joining us. Your account has been created successfully. Please use the following One-Time Password (OTP) to verify your email address:</p>
-          <div style="background-color: #f4f6ff; padding: 15px; border-radius: 8px; text-align: center; margin: 25px 0;">
-            <span style="font-size: 32px; font-weight: bold; letter-spacing: 5px; color: #5f6fff;">${otp}</span>
-          </div>
-          <p>This OTP will expire in 1 minute 30 seconds.</p>
-          <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;">
-          <p style="font-size: 12px; color: #888;">If you did not create this account, please ignore this email.</p>
-        </div>
-      `,
+      html: generateOTPVerificationEmail(name, otp),
     };
 
     await transporter.sendMail(mailOptions);
@@ -141,6 +130,7 @@ export const sendVerifyOtp = async (req, res) => {
       to: user.email,
       subject: "Account Verification OTP",
       text: `Your OTP is ${otp}. Verify your account using this OTP. This OTP will expire in 1 minute 30 seconds.`,
+      html: generateOTPVerificationEmail(user.name, otp),
     };
     await transporter.sendMail(mailOptions);
 
@@ -223,6 +213,7 @@ export const sendResetOtp = async (req, res) => {
       text: `Your OTP is ${otp}. Use this OTP to reset your password.
       This OTP will expire in 1 minute and 30 seconds.
       If you did not request a password reset, please ignore this email.`,
+      html: generateResetPasswordEmail(otp),
     };
     await transporter.sendMail(mailOptions);
 

@@ -5,6 +5,7 @@ import appointmentModel from "../models/appointmentModel.js";
 import favoriteModel from "../models/favoriteModel.js";
 import reviewModel from "../models/reviewModel.js";
 import transporter from "../config/nodeMailer.js";
+import { generateAppointmentBookedEmail, generateAppointmentCancelledEmail } from "../config/emailTemplates.js";
 
 export const getUserData = async (req, res) => {
   try {
@@ -122,6 +123,7 @@ export const bookAppointment = async (req, res) => {
         to: userData.email,
         subject: "Appointment Booked Successfully",
         text: `Hello ${userData.name}, your appointment with Dr. ${docData.name} has been successfully booked for ${slotDate} at ${slotTime}. Thank you for choosing our service!`,
+        html: generateAppointmentBookedEmail(userData.name, docData.name, slotDate, slotTime),
     };
     await transporter.sendMail(mailOptions);
 
@@ -179,6 +181,7 @@ export const cancelAppointment = async (req, res) => {
         to: appointmentData.userData.email,
         subject: "Appointment Cancelled",
         text: `Hello ${appointmentData.userData.name}, your appointment with Dr. ${appointmentData.docData.name} on ${appointmentData.slotDate} at ${appointmentData.slotTime} has been successfully cancelled.`,
+        html: generateAppointmentCancelledEmail(appointmentData.userData.name, appointmentData.docData.name, appointmentData.slotDate, appointmentData.slotTime, 'patient'),
     };
     await transporter.sendMail(mailOptions);
 

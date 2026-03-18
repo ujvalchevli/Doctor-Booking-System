@@ -4,12 +4,14 @@ import jwt from "jsonwebtoken";
 import transporter from "../config/nodeMailer.js";
 import { v2 as cloudinary } from "cloudinary";
 import appointmentModel from "../models/appointmentModel.js";
+import { generateOTPVerificationEmail, generateResetPasswordEmail, generateAppointmentCancelledEmail, generateAppointmentRescheduledEmail, generateAppointmentCompletedEmail } from "../config/emailTemplates.js";
 
 export const register = async (req, res) => {
   try {
     const {
       name,
       email,
+      phone,
       password,
       speciality,
       degree,
@@ -77,6 +79,7 @@ export const register = async (req, res) => {
     const doctorData = {
       name,
       email,
+      phone,
       password: hashedPassword,
       speciality,
       degree: degree,
@@ -113,6 +116,7 @@ export const register = async (req, res) => {
       subject: "Account Verification OTP",
       text: `Your OTP is ${otp}. Verify your account using this OTP. This OTP will expire in 1 minute 30 seconds.
       If you did not create an account, please ignore this email.`,
+      html: generateOTPVerificationEmail(name, otp),
     };
     await transporter.sendMail(mailOptions);
 
@@ -196,6 +200,7 @@ export const sendVerifyOtp = async (req, res) => {
       to: doctor.email,
       subject: "Account Verification OTP",
       text: `Your OTP is ${otp}. Verify your account using this OTP. This OTP will expire in 1 minute 30 seconds.`,
+      html: generateOTPVerificationEmail(doctor.name, otp),
     };
     await transporter.sendMail(mailOptions);
 
@@ -279,6 +284,7 @@ export const sendResetOtp = async (req, res) => {
       to: doctor.email,
       subject: "Password Reset OTP",
       text: `Your OTP is ${otp}. Use this OTP to reset your password. This OTP will expire in 1 minute 30 seconds.`,
+      html: generateResetPasswordEmail(otp),
     };
     await transporter.sendMail(mailOptions);
 
@@ -372,7 +378,7 @@ export const reuploadDocuments = async (req, res) => {
     doctor.degreeImage = degreeUpload.secure_url;
     doctor.idProof = idProofUpload.secure_url;
     doctor.MedicalLicense = MedicalLicenseUpload.secure_url;
-    doctor.doctorverify = "false";
+    doctor.doctorverify = "pending";
     doctor.rejectReason = "";
 
     await doctor.save();
@@ -387,6 +393,7 @@ export const updateDoctorProfile = async (req, res) => {
     const doctorId = req.doctorId;
     const {
       name,
+      phone,
       speciality,
       degree,
       experience,
@@ -401,6 +408,7 @@ export const updateDoctorProfile = async (req, res) => {
 
     const updateData = {
       name,
+      phone,
       speciality,
       degree,
       experience,
@@ -491,6 +499,7 @@ export const cancelAppointmentDoctor = async (req, res) => {
           to: appointmentData.userData.email,
           subject: "Appointment Cancelled by Doctor",
           text: `Hello ${appointmentData.userData.name}, your appointment with Dr. ${docData.name} on ${appointmentData.slotDate} at ${appointmentData.slotTime} has been cancelled by the doctor.`,
+          html: generateAppointmentCancelledEmail(appointmentData.userData.name, docData.name, appointmentData.slotDate, appointmentData.slotTime, 'doctor'),
       };
       await transporter.sendMail(mailOptions);
 
@@ -548,6 +557,7 @@ export const rescheduleAppointmentDoctor = async (req, res) => {
           to: appointmentData.userData.email,
           subject: "Appointment Rescheduled",
           text: `Hello ${appointmentData.userData.name}, your appointment with Dr. ${docData.name} has been rescheduled. New Date: ${slotDate}, New Time: ${slotTime}.`,
+          html: generateAppointmentRescheduledEmail(appointmentData.userData.name, docData.name, slotDate, slotTime),
       };
       await transporter.sendMail(mailOptions);
 
@@ -630,6 +640,7 @@ export const completeAppointment = async (req, res) => {
           to: appointmentData.userData.email,
           subject: "Appointment Completed",
           text: `Hello ${appointmentData.userData.name}, thank you for visiting Dr. ${docData.name}. Your appointment on ${appointmentData.slotDate} is marked as completed. We hope you have a healthy life!`,
+          html: generateAppointmentCompletedEmail(appointmentData.userData.name, docData.name),
       };
       await transporter.sendMail(mailOptions);
 
