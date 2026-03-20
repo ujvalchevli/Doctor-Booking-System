@@ -133,7 +133,7 @@ const AppContextProvider = ({ children }) => {
     try {
       const { data } = await axios.get(backendUrl + "/api/user/favorites");
       if (data.success) {
-        setFavorites(data.favorites.map((fav) => fav.docId._id));
+        setFavorites(data.favorites.filter((fav) => fav.docId).map((fav) => fav.docId._id));
       } else {
         toast.error(data.message);
       }

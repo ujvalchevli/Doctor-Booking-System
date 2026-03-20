@@ -27,7 +27,7 @@ function TopDoctors() {
 
         {/* Doctors Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {doctors.slice(0, 8).map((doctor, index) => (
+          {doctors.slice(0, 4).map((doctor, index) => (
             <div
               key={index}
               onClick={() => { navigate(`/appointment/${doctor._id}`); window.scrollTo(0,0) }}

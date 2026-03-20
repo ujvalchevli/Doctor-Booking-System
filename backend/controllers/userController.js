@@ -220,7 +220,9 @@ export const getFavorites = async (req, res) => {
     const userId = req.userId;
     const favorites = await favoriteModel.find({ userId }).populate("docId");
 
-    res.json({ success: true, favorites });
+    const validFavorites = favorites.filter(fav => fav.docId !== null);
+
+    res.json({ success: true, favorites: validFavorites });
   } catch (error) {
     console.log(error);
     res.json({ success: false, message: error.message });

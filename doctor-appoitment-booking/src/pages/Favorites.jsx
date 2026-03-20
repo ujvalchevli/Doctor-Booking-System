@@ -16,7 +16,7 @@ function Favorites() {
     try {
       const { data } = await axios.get(backendUrl + "/api/user/favorites");
       if (data.success) {
-        setFavoriteDoctors(data.favorites.map(fav => fav.docId));
+        setFavoriteDoctors(data.favorites.map(fav => fav.docId).filter(Boolean));
       }
     } catch (error) {
       console.error(error);

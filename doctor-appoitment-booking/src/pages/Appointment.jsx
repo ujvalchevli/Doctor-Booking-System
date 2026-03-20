@@ -6,7 +6,7 @@ import { toast } from "react-toastify";
 
 function Appointment() {
   const { docId } = useParams();
-  const { doctors, backendUrl, getDoctorsData, isLoggedin, getDoctorReviews, addReview, } = useContext(AppContext);
+  const { doctors, backendUrl, getDoctorsData, isLoggedin, getDoctorReviews, addReview, userData } = useContext(AppContext);
   const daysOfWeek = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
 
   const [docInfo, setDocInfo] = useState(null);
@@ -24,6 +24,11 @@ function Appointment() {
     if (!isLoggedin) {
       toast.warn("Login to book appointment");
       return navigate("/login");
+    }
+
+    if (userData && docInfo && userData.email === docInfo.email) {
+      toast.error("You cannot book an appointment with yourself");
+      return;
     }
 
     try {
@@ -298,9 +303,13 @@ function Appointment() {
                 <button
                   onClick={bookAppointment}
                   className="w-full py-3 bg-linear-to-r from-[#5f6fff] to-[#8a96ff] text-white font-semibold rounded-xl hover:shadow-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
-                  disabled={!slotTime || !docInfo.available}
+                  disabled={(userData && userData.email === docInfo.email) ? true : (!slotTime || !docInfo.available)}
                 >
-                  {docInfo.available ? "Book Appointment" : "Doctor Currently Unavailable"}
+                  {userData && userData.email === docInfo.email 
+                    ? "Cannot Book Yourself" 
+                    : docInfo.available 
+                      ? "Book Appointment" 
+                      : "Doctor Currently Unavailable"}
                 </button>
 
                 {/* Availability Note */}

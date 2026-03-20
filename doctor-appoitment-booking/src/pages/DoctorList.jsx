@@ -23,6 +23,11 @@ function DoctorList() {
   const [searchTerm, setSearchTerm] = useState("");
   const [filterSpecialty, setFilterSpecialty] = useState("All Specialties");
   const [sortBy, setSortBy] = useState("rating");
+  const [visibleCount, setVisibleCount] = useState(6);
+
+  useEffect(() => {
+    setVisibleCount(6);
+  }, [searchTerm, filterSpecialty, sortBy]);
 
   useEffect(() => {
     if (speciality) {
@@ -41,6 +46,7 @@ function DoctorList() {
         const matchesSpecialty =
           filterSpecialty === "All Specialties" ||
           doc.speciality.toLowerCase() === filterSpecialty.toLowerCase();
+        
         return matchesSearch && matchesSpecialty;
       })
       .sort((a, b) => {
@@ -107,6 +113,8 @@ function DoctorList() {
               <FiFilter className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5 pointer-events-none" />
             </div>
 
+          
+
             {/* Sort By - UI Only */}
             <div className="relative">
               <select
@@ -140,7 +148,7 @@ function DoctorList() {
 
         {/* Doctors Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-          {filteredDoctors.map((doctor, index) => (
+          {filteredDoctors.slice(0, visibleCount).map((doctor, index) => (
             <div
               key={index}
               className="group bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100"
@@ -204,17 +212,17 @@ function DoctorList() {
 
                 {/* Details */}
                 <div className="space-y-2 mb-4">
-                  <div className="flex items-center text-gray-600 text-sm">
-                    <MdLocalHospital className="w-4 h-4 mr-2 text-gray-400" />
-                    {doctor.degree}
+                  <div className="flex items-start text-gray-600 text-sm">
+                    <MdLocalHospital className="w-4 h-4 mr-2 mt-0.5 shrink-0 text-gray-400" />
+                    <span>{doctor.degree}</span>
                   </div>
-                  <div className="flex items-center text-gray-600 text-sm">
-                    <FiMapPin className="w-4 h-4 mr-2 text-gray-400" />
-                    {doctor.address}
+                  <div className="flex items-start text-gray-600 text-sm">
+                    <FiMapPin className="w-4 h-4 mr-2 mt-0.5 shrink-0 text-gray-400" />
+                    <span className="line-clamp-2" title={doctor.address}>{doctor.address}</span>
                   </div>
-                  <div className="flex items-center text-gray-600 text-sm">
-                    <FiClock className="w-4 h-4 mr-2 text-gray-400" />
-                    {doctor.experience} experience
+                  <div className="flex items-start text-gray-600 text-sm">
+                    <FiClock className="w-4 h-4 mr-2 mt-0.5 shrink-0 text-gray-400" />
+                    <span>{doctor.experience} experience</span>
                   </div>
                 </div>
 
@@ -252,11 +260,16 @@ function DoctorList() {
         </div>
 
         {/* Load More Button */}
-        <div className="text-center mt-12">
-          <button className="px-8 py-4 border-2 border-[#5f6fff] text-[#5f6fff] font-semibold rounded-xl hover:bg-[#5f6fff] hover:text-white transition-all duration-300">
-            Load More Doctors
-          </button>
-        </div>
+        {visibleCount < filteredDoctors.length && (
+          <div className="text-center mt-12">
+            <button 
+              onClick={() => setVisibleCount((prev) => prev + 6)}
+              className="px-8 py-4 border-2 border-[#5f6fff] text-[#5f6fff] font-semibold rounded-xl hover:bg-[#5f6fff] hover:text-white transition-all duration-300"
+            >
+              Load More Doctors
+            </button>
+          </div>
+        )}
 
         {/* Trust Badges */}
         <div className="mt-16 bg-linear-to-r from-[#5f6fff]/10 to-purple-100/30 rounded-2xl p-8">

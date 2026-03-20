@@ -684,7 +684,7 @@ function DoctorRegister() {
 
               {/* Terms and Submit */}
               <div className="mt-8">
-                <div className="flex items-center mb-6">
+                {/* <div className="flex items-center mb-6">
                   <input
                     type="checkbox"
                     id="terms"
@@ -694,7 +694,7 @@ function DoctorRegister() {
                   <label htmlFor="terms" className="ml-2 text-sm text-gray-600">
                     I confirm that all information provided is true and correct
                   </label>
-                </div>
+                </div> */}
 
                 {/* Navigation Buttons */}
                 <div className="flex justify-between">
