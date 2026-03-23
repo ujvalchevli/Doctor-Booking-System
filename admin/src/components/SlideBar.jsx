@@ -12,13 +12,11 @@ function SlideBar() {
           icon: "doctors",
           label: "Doctors",
           path: "/alldoctors",
-          count: 12,
         },
         {
           icon: "patients",
           label: "Patients",
           path: "/allpatients",
-          count: 156,
         },
         {
           icon: "appointments",
@@ -34,28 +32,23 @@ function SlideBar() {
           icon: "pending",
           label: "Pending Approvals",
           path: "/pendingdoctors",
-          count: 5,
           badge: true,
         },
         {
           icon: "rejected",
           label: "Rejected",
           path: "/rejecteddoctors",
-          count: 3,
         },
       ],
     },
     {
       section: "MANAGEMENT",
       items: [
-        
-        
         {
           icon: "messages",
           label: "Contact Messages",
           path: "/contact-messages",
         },
-        
       ],
     },
   ];
@@ -174,9 +167,7 @@ function SlideBar() {
             />
           </svg>
         );
-     
-      
-      
+
       case "messages":
         return (
           <svg
@@ -193,8 +184,7 @@ function SlideBar() {
             />
           </svg>
         );
-      
-      
+
       default:
         return null;
     }
@@ -270,7 +260,9 @@ function SlideBar() {
                     <div className="flex items-center">
                       <span
                         className={
-                          window.location.pathname === item.path ? "text-[#5f6fff]" : "text-gray-500"
+                          window.location.pathname === item.path
+                            ? "text-[#5f6fff]"
+                            : "text-gray-500"
                         }
                       >
                         {getIcon(item.icon)}
