@@ -198,6 +198,41 @@ const AppContextProvider = ({ children }) => {
     }
   };
 
+  const appointmentRazorpay = async (appointmentId) => {
+    try {
+      const { data } = await axios.post(
+        backendUrl + "/api/user/payment-razorpay",
+        { appointmentId }
+      );
+      if (data.success) {
+        return data.order;
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
+
+  const verifyRazorpay = async (razorpay_order_id) => {
+    try {
+      const { data } = await axios.post(
+        backendUrl + "/api/user/verify-razorpay",
+        { razorpay_order_id }
+      );
+      if (data.success) {
+        toast.success(data.message);
+        return true;
+      } else {
+        toast.error(data.message);
+        return false;
+      }
+    } catch (error) {
+      toast.error(error.message);
+      return false;
+    }
+  };
+
   const getDoctorAppointments = async () => {
     try {
       const { data } = await axios.get(backendUrl + "/api/doctor/appointments");
@@ -375,6 +410,8 @@ const AppContextProvider = ({ children }) => {
     getDoctorsData,
     getUsersAppointments,
     cancelAppointment,
+    appointmentRazorpay,
+    verifyRazorpay,
     getDoctorAppointments,
     cancelAppointmentDoctor,
     rescheduleAppointmentDoctor,

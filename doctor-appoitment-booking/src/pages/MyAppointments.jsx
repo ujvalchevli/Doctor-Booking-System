@@ -3,7 +3,7 @@ import { AppContext } from "../context/AppContext";
 import { toast } from "react-toastify";
 
 function MyAppointments() {
-  const { getUsersAppointments, cancelAppointment } = useContext(AppContext);
+  const { getUsersAppointments, cancelAppointment, appointmentRazorpay, verifyRazorpay } = useContext(AppContext);
   const [appointments, setAppointments] = useState([]);
   const [filter, setFilter] = useState("all");
 
@@ -22,6 +22,47 @@ function MyAppointments() {
     const success = await cancelAppointment(appointmentId);
     if (success) {
       getUserAppointmentsList();
+    }
+  };
+
+  const initPay = async (appointmentId) => {
+    try {
+      const toastId = toast.loading("Processing payment...");
+      const order = await appointmentRazorpay(appointmentId);
+      toast.dismiss(toastId);
+
+      if (!order) {
+        toast.error("Failed to create Razorpay order");
+        return;
+      }
+
+      const options = {
+        key: import.meta.env.VITE_RAZORPAY_KEY_ID,
+        amount: order.amount,
+        currency: order.currency,
+        name: "Appointment Payment",
+        description: "Payment for doctor appointment",
+        order_id: order.id,
+        receipt: order.receipt,
+        handler: async (response) => {
+          console.log(response);
+          try {
+            const success = await verifyRazorpay(response.razorpay_order_id);
+            if (success) {
+              getUserAppointmentsList();
+            }
+          } catch (error) {
+            console.log(error);
+            toast.error(error.message);
+          }
+        },
+      };
+
+      const rzp = new window.Razorpay(options);
+      rzp.open();
+    } catch (error) {
+      console.log(error);
+      toast.error(error.message);
     }
   };
 
@@ -234,10 +275,10 @@ function MyAppointments() {
 
                     {/* Action Buttons - Simple */}
                     <div>
-                      {!apt.cancelled && !apt.isCompleted && (
+                      {!apt.cancelled && !apt.isCompleted && !apt.payment && (
                         <div className="flex gap-2">
                           <button 
-                            onClick={() => toast.info("Payment feature coming soon!")}
+                            onClick={() => initPay(apt._id)}
                             className="px-4 py-2 bg-[#5f6fff] text-white text-sm rounded-lg hover:bg-[#4a5ae0]"
                           >
                             Pay Online
@@ -249,6 +290,11 @@ function MyAppointments() {
                             Cancel
                           </button>
                         </div>
+                      )}
+                      {!apt.cancelled && !apt.isCompleted && apt.payment && (
+                         <button className="px-5 py-2 bg-green-100 text-green-700 font-medium rounded-lg">
+                            Paid
+                         </button>
                       )}
                       {apt.isCompleted && (
                         <button className="px-4 py-2 bg-gray-100 text-gray-700 text-sm rounded-lg hover:bg-gray-200">

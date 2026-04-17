@@ -10,6 +10,8 @@ import {
   getFavorites,
   addReview,
   getDoctorReviews,
+  paymentRazorpay,
+  verifyRazorpay,
 } from "../controllers/userController.js";
 import upload from "../middlewares/multer.js";
 const userRouter = express.Router();
@@ -27,5 +29,7 @@ userRouter.post("/toggle-favorite", userAuth, toggleFavorite);
 userRouter.get("/favorites", userAuth, getFavorites);
 userRouter.post("/add-review", userAuth, addReview);
 userRouter.get("/get-reviews/:docId", getDoctorReviews);
+userRouter.post("/payment-razorpay", userAuth, paymentRazorpay);
+userRouter.post("/verify-razorpay", userAuth, verifyRazorpay);
 
 export default userRouter;
